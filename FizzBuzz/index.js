@@ -1,5 +1,9 @@
+const readline = require('readline-sync');
 
-for(var i = 1; i<=1000; i++){
+console.log('How many values should be printed:');
+let iterations = readline.prompt();
+
+for(var i = 1; i<=iterations; i++){
     let output = [];
     if(i%3 === 0){ //Simple appending of words
         output.push('Fizz');
