@@ -14,16 +14,9 @@ for(var i = 1; i<=1000; i++){
         output = ['Bong'];
     }
     if(i%13 === 0){ //Fezz goes immediately in front of the first item beginning with a B, and is printed even when Bong is present
-        for(let j = 0; j<output.length; j++){
-            if(output[j].charAt(0).toUpperCase() === 'B'){
-                output.splice(j, 0, 'Fezz');
-                break;
-            }
-            if(j === output.length-1){
-                output.push('Fezz');
-                break;
-            }
-        }
+        let fezzLocation = getFezzLocation(output);
+        output.splice(fezzLocation, 0, 'Fezz');
+        
     }
     if(i%17 === 0){ //Reverse the order of the words
         output.reverse();
@@ -32,4 +25,20 @@ for(var i = 1; i<=1000; i++){
         output.push(i).toString();
     }
     console.log(`${i}: ${output.join("")}`);
+}
+
+//Returns the location of 'Fezz' within an array based on the following rule:
+//Fezz goes immediately in front of the first thing beginning with B, or at the end if there are none.
+function getFezzLocation(output){
+    for(let j = 0; j<output.length; j++){
+        var fezzLocation;
+        if(output[j].charAt(0).toUpperCase() === 'B'){
+            fezzLocation = j;
+            break;
+        }
+    }
+    if (fezzLocation === undefined){ //Add Fezz after the last item if no item starts with B
+        fezzLocation === output.length;
+    }
+    return fezzLocation;
 }
