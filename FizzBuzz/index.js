@@ -3,17 +3,25 @@ const readline = require('readline-sync');
 console.log('How many values should be printed:');
 let iterations = readline.prompt();
 
+//Define basic rules
+var rules = {3: 'Fizz',
+             5: 'Buzz',
+             7: 'Bang'}
+
+//Add command line arguments to rules
+for(let i = 2; i<process.argv.length; i+=2){
+    rules[process.argv[i]] = process.argv[i+1]; //Numbers in even arguments, strings in odd arguments
+}
+
 for(var i = 1; i<=iterations; i++){
     let output = [];
-    if(i%3 === 0){ //Simple appending of words
-        output.push('Fizz');
+
+    for(num in rules){ // All simple appending rules
+        if(i%num === 0){
+            output.push(rules[num]);
+        }
     }
-    if(i%5 === 0){
-        output.push('Buzz');
-    }
-    if(i%7 === 0){
-        output.push('Bang');
-    }
+
     if(i%11 === 0){ //Bong replaces any previous items
         output = ['Bong'];
     }
