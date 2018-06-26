@@ -4,7 +4,7 @@ console.log('How many values should be printed:');
 let iterations = readline.prompt();
 
 //Define basic rules
-var rules = {3: 'Fizz',
+let rules = {3: 'Fizz',
              5: 'Buzz',
              7: 'Bang'}
 
@@ -13,10 +13,11 @@ for(let i = 2; i<process.argv.length; i+=2){
     rules[process.argv[i]] = process.argv[i+1]; //Numbers in even arguments, strings in odd arguments
 }
 
-for(var i = 1; i<=iterations; i++){
+for(let i = 1; i<=iterations; i++){
     let output = [];
 
     for(num in rules){ // All simple appending rules
+        //Smaller number rules will always be printed in front of larger number rules
         if(i%num === 0){
             output.push(rules[num]);
         }
@@ -42,8 +43,8 @@ for(var i = 1; i<=iterations; i++){
 //Returns the location of 'Fezz' within an array based on the following rule:
 //Fezz goes immediately in front of the first thing beginning with B, or at the end if there are none.
 function getFezzLocation(output){
+    let fezzLocation;
     for(let j = 0; j<output.length; j++){
-        var fezzLocation;
         if(output[j].charAt(0).toUpperCase() === 'B'){
             fezzLocation = j;
             break;
