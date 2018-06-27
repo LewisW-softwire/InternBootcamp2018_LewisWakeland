@@ -6,7 +6,7 @@ let iterations = readline.prompt();
 //Define basic rules
 let rules = {3: 'Fizz',
              5: 'Buzz',
-             7: 'Bang'}
+             7: 'Bang'};
 
 //Add command line arguments to rules
 for(let i = 2; i<process.argv.length; i+=2){
@@ -51,7 +51,7 @@ function getFezzLocation(output){
         }
     }
     if (fezzLocation === undefined){ //Add Fezz after the last item if no item starts with B
-        fezzLocation === output.length;
+        fezzLocation = output.length;
     }
     return fezzLocation;
 }
