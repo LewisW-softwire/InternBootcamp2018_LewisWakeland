@@ -3,6 +3,7 @@ const moment = require('moment');
 const parse = require('csv-parse/lib/sync');
 const fs = require('fs');
 const path = require('path');
+const Table = require('cli-table');
 
 class Account {
     constructor(name){
@@ -21,9 +22,12 @@ class Transaction {
     }
 }
 
+//Main program
+
 let accounts = {};
 
 let fileLocation = path.join(__dirname, '/Transactions2014.csv')
+//Only continue if the file is found
 if(fs.existsSync(fileLocation)){
     let file = fs.readFileSync(fileLocation);
     let transactionArrays = parse(file);
@@ -31,6 +35,7 @@ if(fs.existsSync(fileLocation)){
     addAccounts(transactions, accounts);
     addTransactions(transactions, accounts);
     processTransactions(accounts);
+    promptCommand(accounts);
 }
 
 function convertTransactionsToClass(transactionArrays){
@@ -80,4 +85,43 @@ function processTransactions(accounts){
             }
         }
     }
+}
+
+function promptCommand(accounts){
+    
+    let response = readline.question("Please enter a command:");
+    if(response === "List All"){
+        printAccountList(accounts);
+    }else if(response.startsWith("List ")){
+        printAccountDetails(accounts[response.slice(5)]);
+    }else{
+        console.log(`Invalid command, Valid commands are:
+List All: Displays the name of each person, and the total amount they owe, or are owed.
+List [Account]: Displays all information about an account.`);
+    }
+}
+
+function printAccountList(accounts){
+    //Make a table so the output looks prettier
+    accTable = new Table({head: ["Name", "Balance"]});
+    details = [];
+    //Put the relevent details into a seperate array so they can be easily added to the table
+    for(name in accounts){
+        details.push([name, accounts[name].balance/100]); //Balance stored in pence
+    }
+    accTable.push.apply(accTable, details);
+    console.log(accTable.toString());
+}
+
+function printAccountDetails(account){
+    //Make a table so the output looks prettier
+    transTable = new Table({head: ["Date", "From", "To", "Narrative", "Ammount"]});
+    details = [];
+    //Put the details into a seperate array so they can be easily added to the table
+    for (t in account.transactions){
+        transaction = account.transactions[t];
+        details.push([transaction.date, transaction.from, transaction.to, transaction.narrative, transaction.amount]);
+    }
+    transTable.push.apply(transTable, details);
+    console.log(transTable.toString());
 }
