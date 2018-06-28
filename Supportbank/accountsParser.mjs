@@ -22,6 +22,8 @@ export default class {
         let transactionArrays = parse(file);
         let transactions = convertTransactionsToClass(transactionArrays.slice(1));
         let accounts = addAccounts(transactions, []);
+        addTransactions(transactions, accounts);
+        processTransactions(accounts);
         return [transactions, accounts];
     }
 };
@@ -50,4 +52,28 @@ function addAccounts(transactions, accounts){
         }
     }
     return accounts;
+}
+
+function addTransactions(transactions, accounts){
+    for(let i = 0; i<transactions.length; i++){
+        let transaction = transactions[i];
+        accounts[transaction.from].transactions.push(transaction);
+        accounts[transaction.to].transactions.push(transaction);
+    }
+}
+
+function processTransactions(accounts){
+    for(var name in accounts){
+        let account = accounts[name];
+        for(let i = 0; i<account.transactions.length; i++){
+            let transaction = account.transactions[i];
+            //Add or remove money from account based on transactions,
+            //Values are stored as integers to avoid floating point precision issues.
+            if(transaction.from === name){
+                account.balance -= Math.round(parseFloat(transaction.amount)*100);
+            }else if(transaction.to === name){
+                account.balance += Math.round(parseFloat(transaction.amount)*100);
+            }
+        }
+    }
 }
