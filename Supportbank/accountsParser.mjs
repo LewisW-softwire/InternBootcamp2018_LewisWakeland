@@ -1,4 +1,6 @@
-import parse from 'csv-parse/lib/sync';
+import parseCSV from 'csv-parse/lib/sync';
+import moment from 'moment';
+import parseXML from 'node-xml-lite';
 
 class Account {
     constructor(name){
@@ -19,23 +21,50 @@ class Transaction {
 
 export default class {
     static parseCSV(file){
-        let transactionArrays = parse(file);
-        let transactions = convertTransactionsToClass(transactionArrays.slice(1));
-        let accounts = addAccounts(transactions, []);
-        addTransactions(transactions, accounts);
-        processTransactions(accounts);
-        return [transactions, accounts];
+        let transactionArrays = parseCSV(file);
+        let transactions = convertTransactionsArrayToClass(transactionArrays.slice(1));
+        return makeAccounts(transactions);
     }
+    static parseJSON(file){
+        let JSONObjects = JSON.parse(file);
+        let transactions = convertJSONObjectsToClass(JSONObjects);
+        return makeAccounts(transactions);
+    }
+    //static parseXML(file){
+    //    let XMLObjects = parseXML.parseString(file);
+    //    console.log(XMLObjects);
+    //    //let transactions = convertJSONObjectsToClass(JSONObjects);
+    //    //return makeAccounts(transactions);
+    //}
 };
 
-function convertTransactionsToClass(transactionArrays){
+function makeAccounts(transactions){
+    let accounts = addAccounts(transactions, []);
+    addTransactions(transactions, accounts);
+    processTransactions(accounts);
+    return [transactions, accounts];
+}
+
+function convertTransactionsArrayToClass(transactionArrays){
     let transactions = [];
     transactionArrays.forEach(transaction => (transactions.push(new Transaction(
-        transaction[0],
+        //Convert all dates to ISO standard (without time)
+        moment(transaction[0], "DD/MM/YYYY").format("YYYY-MM-DD"),
         transaction[1],
         transaction[2],
         transaction[3],
         transaction[4]))));
+    return transactions;
+}
+
+function convertJSONObjectsToClass(JSONObjects){
+    let transactions = [];
+    JSONObjects.forEach(transaction => (transactions.push(new Transaction(
+        moment(transaction.Date).format("YYYY-MM-DD"),
+        transaction.FromAccount,
+        transaction.ToAccount,
+        transaction.Narrative,
+        transaction.Amount))));
     return transactions;
 }
 

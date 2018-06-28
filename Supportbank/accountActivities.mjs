@@ -7,7 +7,7 @@ export default class {
         let details = [];
         //Put the relevent details into a seperate array so they can be easily added to the table
         for(var name in accounts){
-            details.push([name, accounts[name].balance/100]); //Balance stored in pence
+            details.push([name, (accounts[name].balance/100).toFixed(2)]); //Balance stored in pence
         }
         accTable.push.apply(accTable, details);
         console.log(accTable.toString());
@@ -20,6 +20,7 @@ export default class {
         //Put the details into a seperate array so they can be easily added to the table
         for (var t in account.transactions){
             let transaction = account.transactions[t];
+            console.log(typeof(transaction.amount));
             details.push([transaction.date, transaction.from, transaction.to, transaction.narrative, transaction.amount]);
         }
         transTable.push.apply(transTable, details);
