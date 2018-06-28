@@ -8,8 +8,11 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/index.js",
-            "console": "integratedTerminal"
+            "program": "${workspaceFolder}/index.mjs",
+            "console": "integratedTerminal",
+            "runtimeArgs": [
+                "--experimental-modules"
+            ]
         }
     ]
 }

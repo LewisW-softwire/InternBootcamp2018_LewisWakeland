@@ -1,9 +1,20 @@
-const readline = require('readline-sync');
-const moment = require('moment');
-const parse = require('csv-parse/lib/sync');
-const fs = require('fs');
-const path = require('path');
-const Table = require('cli-table');
+'use strict'
+
+import accountsParser from "./accountsParser.mjs";
+//import readline from './node_modules/readline-sync';
+//import readline from 'readline-sync';
+import readline from 'readline-sync';
+//const readline = require('readline-sync');
+//const moment = require('moment');
+import moment from 'moment';
+//const fs = require('fs');
+import fs from 'fs';
+//const path = require('path');
+import path from 'path';
+//const parse = require('csv-parse/lib/sync');
+import parse from 'csv-parse/lib/sync';
+//const Table = require('cli-table');
+import Table from 'cli-table';
 
 class Account {
     constructor(name){
@@ -26,13 +37,15 @@ class Transaction {
 
 let accounts = {};
 
+let __dirname = path.resolve(path.dirname(''));
 let fileLocation = path.join(__dirname, '/Transactions2014.csv')
 //Only continue if the file is found
 if(fs.existsSync(fileLocation)){
     let file = fs.readFileSync(fileLocation);
-    let transactionArrays = parse(file);
-    let transactions = convertTransactionsToClass(transactionArrays.slice(1));
-    addAccounts(transactions, accounts);
+    let [transactions, accounts] = accountsParser.parseCSV(file);
+    //let transactionArrays = parse(file);
+    //let transactions = convertTransactionsToClass(transactionArrays.slice(1));
+    //addAccounts(transactions, accounts);
     addTransactions(transactions, accounts);
     processTransactions(accounts);
     promptCommand(accounts);
@@ -51,7 +64,7 @@ function convertTransactionsToClass(transactionArrays){
 
 function addAccounts(transactions, accounts){
     for (let i = 0; i<transactions.length; i++) {
-        transaction = transactions[i]
+        let transaction = transactions[i]
         //Add any accounts that appear in the From column and haven't already been added.
         if(!accounts.hasOwnProperty(transaction.from)){
             accounts[transaction.from] = new Account(transaction.from);
@@ -61,6 +74,7 @@ function addAccounts(transactions, accounts){
             accounts[transaction.to] = new Account(transaction.to);
         }
     }
+    return accounts;
 }
 
 function addTransactions(transactions, accounts){
@@ -72,10 +86,10 @@ function addTransactions(transactions, accounts){
 }
 
 function processTransactions(accounts){
-    for(name in accounts){
-        account = accounts[name];
+    for(var name in accounts){
+        let account = accounts[name];
         for(let i = 0; i<account.transactions.length; i++){
-            transaction = account.transactions[i];
+            let transaction = account.transactions[i];
             //Add or remove money from account based on transactions,
             //Values are stored as integers to avoid floating point precision issues.
             if(transaction.from === name){
@@ -103,10 +117,10 @@ List [Account]: Displays all information about an account.`);
 
 function printAccountList(accounts){
     //Make a table so the output looks prettier
-    accTable = new Table({head: ["Name", "Balance"]});
-    details = [];
+    let accTable = new Table({head: ["Name", "Balance"]});
+    let details = [];
     //Put the relevent details into a seperate array so they can be easily added to the table
-    for(name in accounts){
+    for(var name in accounts){
         details.push([name, accounts[name].balance/100]); //Balance stored in pence
     }
     accTable.push.apply(accTable, details);
@@ -115,11 +129,11 @@ function printAccountList(accounts){
 
 function printAccountDetails(account){
     //Make a table so the output looks prettier
-    transTable = new Table({head: ["Date", "From", "To", "Narrative", "Ammount"]});
-    details = [];
+    let transTable = new Table({head: ["Date", "From", "To", "Narrative", "Ammount"]});
+    let details = [];
     //Put the details into a seperate array so they can be easily added to the table
-    for (t in account.transactions){
-        transaction = account.transactions[t];
+    for (var t in account.transactions){
+        let transaction = account.transactions[t];
         details.push([transaction.date, transaction.from, transaction.to, transaction.narrative, transaction.amount]);
     }
     transTable.push.apply(transTable, details);
