@@ -1,25 +1,32 @@
-var readline = require('readline-sync');
 var request = require('request');
 
+class busStop {
+    constructor(name, code) {
+      this.name = name;
+      this.code = code;
+    }
+}
+
 exports.getStopsFromPostcode = function(postcode) {
-    request(`http://api.postcodes.io/postcodes/${postcode}`,
-        async function(error, response, body) {
-            let geoData = JSON.parse(body); 
-            let latitude = geoData.result.latitude;
-            let longitude = geoData.result.longitude;
-            let closestStops = [];
-            let radius = 10;
-            while(closestStops.length<2 && radius < 85000){
-                closestStopsPromise = await getStopsFromLatLong(latitude, longitude, radius)
-                .then((val) => closestStops = val)
-                .catch((err) => console.log("test"));
-                
-                radius += 200;
+    return new Promise((resolve, reject) => {
+        request(`http://api.postcodes.io/postcodes/${postcode}`,
+            async function(error, response, body) {
+                let geoData = JSON.parse(body); 
+                let latitude = geoData.result.latitude;
+                let longitude = geoData.result.longitude;
+                let busStops = [];
+                let radius = 200;
+                while(busStops.length<2 && radius < 85000){
+                    closestStopsPromise = await getStopsFromLatLong(latitude, longitude, radius)
+                    .then((val) => busStops = val)
+                    .catch((err) => console.log("test"));
+                    radius += 200;
+                }
+                resolve(busStops);
             }
-            console.log(closestStops);
-            
-        }
-    );
+        );
+    });
+
 
     //function GetStops(latitude, longitude, radius) {
     //    getStopsFromLatLong(latitude, longitude, radius).then((val) => { if (val.length < 2) { this.GetStops(radius + 200) }  })
@@ -37,8 +44,9 @@ exports.getStopsFromPostcode = function(postcode) {
                 if(stopData.stopPoints.length<2){
                     resolve([]);
                 }else{
-                    var closestStopCodes = [stopData.stopPoints[0].stationNaptan, stopData.stopPoints[1].stationNaptan];
-                    resolve(closestStopCodes);
+                    let stop1 = new busStop(stopData.stopPoints[0].commonName, stopData.stopPoints[0].naptanId);
+                    let stop2 = new busStop(stopData.stopPoints[1].commonName, stopData.stopPoints[1].naptanId);
+                    resolve([stop1, stop2]);
                 }
             }
         );
