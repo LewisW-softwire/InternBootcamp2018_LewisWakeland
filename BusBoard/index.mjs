@@ -22,15 +22,16 @@ request(`https://api.tfl.gov.uk/StopPoint/${stopCode}/Arrivals?app_id=ad55981b&a
         });
         next5Busses = next5Busses.slice(0, 5);
 
+        let outputData = []; //array of the next 5 busses and data to print
         for(let i = 0; i < 5; i++){
             let currentIndex = next5Busses[i][0]; //the index of the bus we want
-            let currentDestination = data[currentIndex].destinationName;
             let lineName = data[currentIndex].lineName;
-            let arrivalTime = data[currentIndex].expectedArrival;
-            console.log(currentDestination);
-            console.log(lineName);
-            console.log(arrivalTime);
-
+            let currentDestination = data[currentIndex].destinationName;
+            let arrivalTime = moment( data[currentIndex].expectedArrival );
+            outputData.push([lineName, currentDestination, arrivalTime.format('HH:mm:ss')]);
         }
+        let busTimetable = new Table({head: ["Line Name", "Destination", "Arrival Time"]});
+        busTimetable.push.apply(busTimetable, outputData);
+        console.log(busTimetable.toString());
         
     });
