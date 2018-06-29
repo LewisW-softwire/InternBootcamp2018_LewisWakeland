@@ -16,7 +16,7 @@ exports.getStopsFromPostcode = function(postcode) {
                 let longitude = geoData.result.longitude;
                 let busStops = [];
                 let radius = 200;
-                while(busStops.length<2 && radius < 85000){
+                while(busStops.length<2 && radius < 5000){
                     closestStopsPromise = await getStopsFromLatLong(latitude, longitude, radius)
                     .then((val) => busStops = val)
                     .catch((err) => console.log("test"));

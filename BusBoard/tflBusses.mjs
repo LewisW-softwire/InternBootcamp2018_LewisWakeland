@@ -1,9 +1,11 @@
 var request = require('request');
 var moment = require('moment');
-class busStop {
-    constructor(name, code) {
-      this.name = name;
-      this.code = code;
+
+class busArrival{
+    constructor(lineName, destination, arrivalTime){
+        this.lineName = lineName;
+        this.destination = destination;
+        this.arrivalTime = arrivalTime;
     }
 }
 
@@ -21,12 +23,12 @@ exports.getTimetable = function(stopCode) {
             });
             next5Busses = next5Busses.slice(0, 5);
             let outputData = []; //array of the next 5 busses and data to print
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < Math.min(5, next5Busses.length); i++) {
                 let currentIndex = next5Busses[i][0]; //the index of the bus we want
                 let lineName = data[currentIndex].lineName;
                 let currentDestination = data[currentIndex].destinationName;
                 let arrivalTime = moment(data[currentIndex].expectedArrival);
-                outputData.push([lineName, currentDestination, arrivalTime.format('HH:mm:ss')]);
+                outputData.push(new busArrival(lineName, currentDestination, arrivalTime.format('HH:mm:ss')));
             }
             resolve(outputData);
         });
