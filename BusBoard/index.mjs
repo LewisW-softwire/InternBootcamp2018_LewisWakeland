@@ -3,14 +3,6 @@ var geolocation = require('./geolocation.mjs');
 var tflBusses = require('./tflBusses.mjs');
 var express = require('express');
 
-class busArrival{
-    constructor(lineName, destination, arrivalTime){
-        this.lineName = lineName;
-        this.destination = destination;
-        this.arrivalTime = arrivalTime;
-    }
-}
-
 const app = express();
 app.get("/departureBoards/:postcode", function(req, res ){
     let postcode = req.params.postcode;
@@ -28,6 +20,7 @@ app.get("/departureBoards/:postcode", function(req, res ){
             });
         }
     });
+    
 
 
     function makeTimetable(busStop) {
@@ -41,6 +34,7 @@ app.get("/departureBoards/:postcode", function(req, res ){
     }
 
 });
+app.use(express.static('frontend'));
 app.listen(8080, () => console.log("Listening on port 8080"));
 
 
