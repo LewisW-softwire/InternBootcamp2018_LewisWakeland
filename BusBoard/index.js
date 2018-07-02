@@ -1,13 +1,14 @@
 var Table = require('cli-table');
-var geolocation = require('./geolocation.mjs');
-var tflBusses = require('./tflBusses.mjs');
+var geolocation = require('./geolocation.js');
+var tflBusses = require('./tflBusses.js');
 var express = require('express');
 
 const app = express();
-app.get("/departureBoards/:postcode", function(req, res ){
+app.get("/departureBoards/:postcode", function(req, res){
     let postcode = req.params.postcode;
     geolocation.getStopsFromPostcode(postcode)
     .then( function (nearbyStops) {
+        console.log(nearbyStops)
         let response = {};
         if(nearbyStops.length == 0){
             res.status(400).send("Error 400: No stop within 5km, consider moving to London.");

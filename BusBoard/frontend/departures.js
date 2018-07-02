@@ -5,6 +5,7 @@ function showTimetable() {
     xhttp.setRequestHeader('Content-Type', 'application/json');
     xhttp.onload = function() {
         // Handle response from our API
+        console.log(xhttp.response);
         var outputString = "";
         if(xhttp.status !== 200){
             outputString = `<p>${xhttp.response}</p>`;

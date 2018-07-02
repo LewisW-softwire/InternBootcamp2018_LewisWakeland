@@ -9,27 +9,31 @@ class busStop {
 
 exports.getStopsFromPostcode = function(postcode) {
     return new Promise((resolve, reject) => {
-        request(`http://api.postcodes.io/postcodes/${postcode}`,
-            async function(error, response, body) {
-                let geoData = JSON.parse(body);
-                if(geoData.status === 200){ //Return a result if the postcode is valid
-                    let latitude = geoData.result.latitude;
-                    let longitude = geoData.result.longitude;
-                    let busStops = [];
-                    let radius = 200;
-                    while(busStops.length<2 && radius < 5000){
-                        closestStopsPromise = await getStopsFromLatLong(latitude, longitude, radius)
-                        .then((val) => busStops = val)
-                        .catch((err) => console.log("test"));
-                        radius += 200;
-                    }
-                    resolve(busStops);
-                }else{ //Pass on the error code if the request is invalid
-                    reject(geoData.status);
-                }
+        latLongPromise = getLatLongFromPostcode(postcode);
+        latLongPromise
+        .then( async function (coordinates) {
+            let busStops = [];
+            console.log('foo');
+            console.log(typeof(coordinates));
+            let latitude = coordinates[0];
+            let longitude = coordinates[1];
+            console.log(latitude);
+            console.log(longitude);
+            let radius = 200;
+            while(busStops.length<2 && radius < 5000){
+                closestStopsPromise = await getStopsFromLatLong(latitude, longitude, radius)
+                .then((val) => busStops = val)
+                .catch((err) => console.log("test"));
+                radius += 200;
             }
-        );
+            resolve(busStops);
+            console.log(busStops)
+        })
+        .catch(function(err){
+            reject(err);
+        });
     });
+}
 
 
     //function GetStops(latitude, longitude, radius) {
@@ -54,9 +58,22 @@ exports.getStopsFromPostcode = function(postcode) {
                 }
             }
         );
-        });
-        
+        });  
     }
 
+getLatLongFromPostcode = function(postcode) {
+    return new Promise((resolve, reject) => {
+        request(`http://api.postcodes.io/postcodes/${postcode}`,
+            async function(error, response, body) {
+                let geoData = JSON.parse(body);
+                if(geoData.status === 200){ //Return a result if the postcode is valid
+                    let latitude = geoData.result.latitude;
+                    let longitude = geoData.result.longitude;
+                    resolve([latitude, longitude]);
+                }else{ //Pass on the error code if the request is invalid
+                    reject(geoData.status);
+                }
+            }
+        );
+    });
 }
-
