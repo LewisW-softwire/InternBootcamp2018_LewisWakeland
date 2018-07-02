@@ -1,8 +1,9 @@
 var request = require('request');
 
 class busStop {
-    constructor(name, code) {
+    constructor(name, stopLetter, code) {
       this.name = name;
+      this.stopLetter = stopLetter;
       this.code = code;
     }
 }
@@ -48,8 +49,8 @@ exports.getStopsFromPostcode = function(postcode) {
                 if(stopData.stopPoints.length<2){
                     resolve([]);
                 }else{
-                    let stop1 = new busStop(stopData.stopPoints[0].commonName, stopData.stopPoints[0].naptanId);
-                    let stop2 = new busStop(stopData.stopPoints[1].commonName, stopData.stopPoints[1].naptanId);
+                    let stop1 = new busStop(stopData.stopPoints[0].commonName, stopData.stopPoints[0].stopLetter, stopData.stopPoints[0].naptanId);
+                    let stop2 = new busStop(stopData.stopPoints[1].commonName, stopData.stopPoints[1].stopLetter, stopData.stopPoints[1].naptanId);
                     resolve([stop1, stop2]);
                 }
             }

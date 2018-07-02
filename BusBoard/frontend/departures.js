@@ -9,11 +9,11 @@ function showTimetable() {
         if(xhttp.status !== 200){
             outputString = `<p>${xhttp.response}</p>`;
         }else{
-            let timetableData = JSON.parse(xhttp.response);
+            let response = JSON.parse(xhttp.response);
             outputString = '<h2>Results</h2>\n';
-            let stations = Object.keys(timetableData);
+            let stations = Object.keys(response);
             for(let j = 0; j<stations.length; j++){
-                outputString += `<h3>${stations[j]}</h3>\n`;
+                outputString += `<h3>${response[stations[j]].name} ${response[stations[j]].stopLetter}</h3>\n`;
                 outputString += '<table>\n';
                 outputString += '<tr>\n';
                 outputString += `<th>Line Name</th>\n`;
@@ -21,8 +21,8 @@ function showTimetable() {
                 outputString += `<th>Destination</th>\n`;
                 outputString += '</tr>\n';
     
-                for (i=0; i<timetableData[stations[j]].length; i++) {
-                    let currentArrival = timetableData[stations[j]][i];
+                for (i=0; i<response[j].data.length; i++) {
+                    let currentArrival = response[stations[j]].data[i];
                     outputString += '<tr>\n';
                     outputString += `<td>${currentArrival.lineName}</td>\n`;
                     outputString += `<td>${currentArrival.arrivalTime}</td>\n`;
