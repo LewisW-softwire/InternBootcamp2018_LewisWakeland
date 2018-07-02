@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <title>Departure boards</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="//cdn.muicss.com/mui-0.9.39/css/mui.min.css" rel="stylesheet" type="text/css" />
+    <script src="//cdn.muicss.com/mui-0.9.39/js/mui.min.js"></script>
     <script src="departures.js"></script>
 
     <script>
@@ -41,13 +43,20 @@
 
   </head>
   <body>
-    <h1>BusBoard</h1>
-    <form action="javascript:void(0)" onsubmit="showTimetable();">
-        Postcode:<br>
-        <input type="text" name="postcode" id="postcode">
-        <input type="submit" value="Submit">
-    </form>
-    <div id="results">
+    <div id="appbar" class="header-shadow">
+        <div class="mui-container-fluid">
+            <h1>BusBoard</h1>
+        </div>
+    </div>
+    <div class="mui-col-md-6">
+        <form action="javascript:void(0)" onsubmit="showTimetable();" class="mui-form postcode-form">
+            <div class="mui-textfield">
+                <input type="text" name="postcode" id="postcode" placeholder="Postcode">
+            </div>
+            <button type="submit" value="Submit" class="mui-btn mui-btn--primary mui-btn--raised">Submit</button>
+        </form>
+    </div>
+    <div id="results" class="mui-panel mui-container mui-col-md-6">
         <p>Enter a postcode to see bus times.</p>
     </div>
 

@@ -14,7 +14,7 @@ function showTimetable() {
             let stations = Object.keys(response);
             for(let j = 0; j<stations.length; j++){
                 outputString += `<h3>${response[stations[j]].name} ${response[stations[j]].stopLetter}</h3>\n`;
-                outputString += '<table>\n';
+                outputString += '<table class="mui-table mui-table--bordered bus-timetable">\n';
                 outputString += '<tr>\n';
                 outputString += `<th>Line Name</th>\n`;
                 outputString += `<th>Arrival Time</th>\n`;

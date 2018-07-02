@@ -1,12 +1,22 @@
 *{
-    font-family: sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-table, th, td {
-    border: 1px solid black;
-    border-collapse: collapse;
+#appbar{
+    background-color: #F44336;
+    color: #FFFFFF;
+    padding-left: 1rem;
+    margin-bottom: 1rem;
 }
 
-table{
-    width: 30%;
+.header-shadow{
+    box-shadow: 0 2px 5px rgba(0,0,0,.26);
+}
+
+body{
+    background-color: #EEEEEE;
+}
+
+#results{
+    width: 40%;
 }
