@@ -11,18 +11,22 @@ exports.getStopsFromPostcode = function(postcode) {
     return new Promise((resolve, reject) => {
         request(`http://api.postcodes.io/postcodes/${postcode}`,
             async function(error, response, body) {
-                let geoData = JSON.parse(body); 
-                let latitude = geoData.result.latitude;
-                let longitude = geoData.result.longitude;
-                let busStops = [];
-                let radius = 200;
-                while(busStops.length<2 && radius < 5000){
-                    closestStopsPromise = await getStopsFromLatLong(latitude, longitude, radius)
-                    .then((val) => busStops = val)
-                    .catch((err) => console.log("test"));
-                    radius += 200;
+                let geoData = JSON.parse(body);
+                if(geoData.status === 200){ //Return a result if the postcode is valid
+                    let latitude = geoData.result.latitude;
+                    let longitude = geoData.result.longitude;
+                    let busStops = [];
+                    let radius = 200;
+                    while(busStops.length<2 && radius < 5000){
+                        closestStopsPromise = await getStopsFromLatLong(latitude, longitude, radius)
+                        .then((val) => busStops = val)
+                        .catch((err) => console.log("test"));
+                        radius += 200;
+                    }
+                    resolve(busStops);
+                }else{ //Pass on the error code if the request is invalid
+                    reject(geoData.status);
                 }
-                resolve(busStops);
             }
         );
     });

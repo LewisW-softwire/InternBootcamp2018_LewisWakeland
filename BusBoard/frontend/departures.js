@@ -1,28 +1,42 @@
 function showTimetable() {
     let postcode = document.getElementById('postcode').value;
     var xhttp = new XMLHttpRequest();
-    console.log(postcode);
     xhttp.open('GET', `http://localhost:8080/departureBoards/${postcode}`, true);
     xhttp.setRequestHeader('Content-Type', 'application/json');
     xhttp.onload = function() {
-        // Handle response here using e.g. xhttp.status, xhttp.response, xhttp.responseText
-        console.log(xhttp.response);
-        let timetableData = JSON.parse(xhttp.response);
-        let outputString = '<h2>Results</h2>\n';
-        let [station1, station2] = Object.keys(timetableData);
-        outputString = outputString + '<h3>' + station1 + '</h3>\n<ul>\n';
-        for (i=0; i<timetableData[station1].length; i++) {
-            let currentArrival = timetableData[station1][i];
-            outputString = outputString + '<li>' +currentArrival.arrivalTime + currentArrival.lineName + currentArrival.destination + '</li>';
+        // Handle response from our API
+        var outputString = "";
+        if(xhttp.status !== 200){
+            outputString = `<p>${xhttp.response}</p>`;
+        }else{
+            let timetableData = JSON.parse(xhttp.response);
+            outputString = '<h2>Results</h2>\n';
+            let stations = Object.keys(timetableData);
+            for(let j = 0; j<stations.length; j++){
+                outputString += `<h3>${stations[j]}</h3>\n`;
+                outputString += '<table>\n';
+                outputString += '<tr>\n';
+                outputString += `<th>Line Name</th>\n`;
+                outputString += `<th>Arrival Time</th>\n`;
+                outputString += `<th>Destination</th>\n`;
+                outputString += '</tr>\n';
+    
+                for (i=0; i<timetableData[stations[j]].length; i++) {
+                    let currentArrival = timetableData[stations[j]][i];
+                    outputString += '<tr>\n';
+                    outputString += `<td>${currentArrival.lineName}</td>\n`;
+                    outputString += `<td>${currentArrival.arrivalTime}</td>\n`;
+                    outputString += `<td>${currentArrival.destination}</td>\n`;
+                    outputString += '</tr>\n';
+                }
+                outputString += '</table>';
+            }
         }
-        outputString += '</ul>';
-        //2 minutes: 123 to Example Street
 
         document.getElementById("results").innerHTML = outputString;
 
     }
 
     xhttp.send();
-    console.log('hello');
     
 }

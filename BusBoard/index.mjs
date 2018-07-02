@@ -6,7 +6,8 @@ var express = require('express');
 const app = express();
 app.get("/departureBoards/:postcode", function(req, res ){
     let postcode = req.params.postcode;
-    geolocation.getStopsFromPostcode(postcode).then( function (nearbyStops) {
+    geolocation.getStopsFromPostcode(postcode)
+    .then( function (nearbyStops) {
         let response = {};
         if(nearbyStops.length == 0){
             res.status(400).send("Error 400: No stop within 5km, consider moving to London.");
@@ -19,6 +20,9 @@ app.get("/departureBoards/:postcode", function(req, res ){
                 });
             });
         }
+    })
+    .catch(function(err){
+        res.status(err).send("Error " + err + ": This most likely means the postcode you entered is not correct.");
     });
     
 
